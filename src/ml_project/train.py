@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import joblib
 import pandas as pd
@@ -9,11 +10,15 @@ from sklearn.model_selection import train_test_split
 from ml_project.config import ARTIFACTS, RANDOM_STATE, TRAIN, TRAIN_LABELS
 
 
-def train() -> None:
-    ARTIFACTS.mkdir(parents=True, exist_ok=True)
+def train(
+        train_path: Path = TRAIN,
+        labels_path: Path = TRAIN_LABELS,
+        artifacts_dir: Path = ARTIFACTS
+) -> None:
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
 
-    X = pd.read_csv(TRAIN, header=None)
-    y = pd.read_csv(TRAIN_LABELS, header=None).squeeze("columns")
+    X = pd.read_csv(train_path, header=None)
+    y = pd.read_csv(labels_path, header=None).squeeze("columns")
 
     X_train, X_valid, y_train, y_valid = train_test_split(
         X, y, stratify=y, shuffle=True, random_state=RANDOM_STATE
@@ -29,10 +34,10 @@ def train() -> None:
         "precision": precision_score(y_valid, preds),
     }
 
-    with open(ARTIFACTS / "metrics.json", "w", encoding="utf-8") as file:
+    with open(artifacts_dir / "metrics.json", "w", encoding="utf-8") as file:
         json.dump(metrics, file, indent=2)
 
-    joblib.dump(model, ARTIFACTS / "forest.joblib")
+    joblib.dump(model, artifacts_dir / "forest.joblib")
 
 if __name__ == "__main__":
     train()
