@@ -7,10 +7,7 @@ from ml_project.train import train
 def main() -> None:
     parser = argparse.ArgumentParser()
 
-    subparsers = parser.add_subparsers(
-        dest="command",
-        required=True
-    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
 
     train_parser = subparsers.add_parser("train")
     predict_parser = subparsers.add_parser("predict")

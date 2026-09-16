@@ -1,13 +1,14 @@
 from pathlib import Path
-from sklearn.ensemble import RandomForestClassifier
-import pandas as pd
+
 import joblib
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+
 from ml_project.predict import predict
 
 
 def test_predict_creates_predictions(
-        tmp_path: Path,
-        train_df: tuple[pd.DataFrame, pd.Series]
+    tmp_path: Path, train_df: tuple[pd.DataFrame, pd.Series]
 ) -> None:
     test_path = tmp_path / "test.csv"
     artifacts_dir = tmp_path / "artifacts"
@@ -28,13 +29,9 @@ def test_predict_creates_predictions(
             1: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
         }
     )
-    X_test.to_csv(test_path,index=False, header=False)
+    X_test.to_csv(test_path, index=False, header=False)
 
-    predict(
-        test_path=test_path,
-        artifacts_dir=artifacts_dir,
-        model_path=model_path
-    )
+    predict(test_path=test_path, artifacts_dir=artifacts_dir, model_path=model_path)
     prediction_path = artifacts_dir / "predictions.csv"
     assert prediction_path.exists()
 

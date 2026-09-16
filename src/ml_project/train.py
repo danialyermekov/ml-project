@@ -11,9 +11,9 @@ from ml_project.config import ARTIFACTS, RANDOM_STATE, TRAIN, TRAIN_LABELS
 
 
 def train(
-        train_path: Path = TRAIN,
-        labels_path: Path = TRAIN_LABELS,
-        artifacts_dir: Path = ARTIFACTS
+    train_path: Path = TRAIN,
+    labels_path: Path = TRAIN_LABELS,
+    artifacts_dir: Path = ARTIFACTS,
 ) -> None:
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
@@ -38,6 +38,7 @@ def train(
         json.dump(metrics, file, indent=2)
 
     joblib.dump(model, artifacts_dir / "forest.joblib")
+
 
 if __name__ == "__main__":
     train()
