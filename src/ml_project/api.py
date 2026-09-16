@@ -36,9 +36,9 @@ def predict(request: PredictionRequest) -> PredictionResponse:
     if len(request.features) != expected_features:
         raise HTTPException(
             status_code=422,
-            detail=(f"Expected {expected_features} features,"
-                    f"got {len(request.features)}"
-            )
+            detail=(
+                f"Expected {expected_features} features,got {len(request.features)}"
+            ),
         )
 
     prediction = int(model.predict([request.features])[0])

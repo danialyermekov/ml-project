@@ -1,11 +1,13 @@
-import numpy as np
+from collections.abc import Iterator
+
 import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 from sklearn.ensemble import RandomForestClassifier
-from collections.abc import Iterator
+
 import ml_project.api as api_module
 from ml_project.config import RANDOM_STATE
+
 
 @pytest.fixture
 def train_df() -> tuple[pd.DataFrame, pd.Series]:
@@ -22,7 +24,7 @@ def train_df() -> tuple[pd.DataFrame, pd.Series]:
 
 @pytest.fixture
 def api_model(train_df: tuple[pd.DataFrame, pd.Series]) -> RandomForestClassifier:
-    X,y = train_df
+    X, y = train_df
 
     model = RandomForestClassifier(random_state=RANDOM_STATE)
     model.fit(X, y)
@@ -32,14 +34,9 @@ def api_model(train_df: tuple[pd.DataFrame, pd.Series]) -> RandomForestClassifie
 
 @pytest.fixture
 def client(
-    monkeypatch: pytest.MonkeyPatch,
-    api_model: RandomForestClassifier
+    monkeypatch: pytest.MonkeyPatch, api_model: RandomForestClassifier
 ) -> Iterator[TestClient]:
-    monkeypatch.setattr(
-        api_module.joblib,
-        "load",
-        lambda path: api_model
-    )
+    monkeypatch.setattr(api_module.joblib, "load", lambda path: api_model)
 
     with TestClient(api_module.app) as test_client:
         yield test_client
