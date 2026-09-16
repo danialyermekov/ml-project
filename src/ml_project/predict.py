@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import joblib
 import pandas as pd
 
@@ -9,8 +8,11 @@ from ml_project.config import ARTIFACTS, TEST
 def predict(
     test_path: Path = TEST,
     artifacts_dir: Path = ARTIFACTS,
-    model_path: Path = ARTIFACTS / "forest.joblib",
+    model_path: Path | None = None,
 ) -> None:
+    if model_path is None:
+        model_path = ARTIFACTS / "forest.joblib"
+
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
     X_test = pd.read_csv(test_path, header=None)
