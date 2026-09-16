@@ -2,7 +2,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 import joblib
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from sklearn.ensemble import RandomForestClassifier
 
 from ml_project.config import ARTIFACTS
@@ -31,6 +31,15 @@ def health() -> dict[str, str]:
 @app.post("/predict")
 def predict(request: PredictionRequest) -> PredictionResponse:
     model = models["forest"]
+    expected_features = model.n_features_in_
+
+    if len(request.features) != expected_features:
+        raise HTTPException(
+            status_code=422,
+            detail=(f"Expected {expected_features} features,"
+                    f"got {len(request.features)}"
+            )
+        )
 
     prediction = int(model.predict([request.features])[0])
 

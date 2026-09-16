@@ -21,14 +21,8 @@ def train_df() -> tuple[pd.DataFrame, pd.Series]:
 
 
 @pytest.fixture
-def api_model() -> RandomForestClassifier:
-    X = np.vstack(
-        [
-            np.zeros((10, 40)),
-            np.ones((10, 40))
-        ]
-    )
-    y = np.array([0] * 10 + [1] * 10)
+def api_model(train_df: tuple[pd.DataFrame, pd.Series]) -> RandomForestClassifier:
+    X,y = train_df
 
     model = RandomForestClassifier(random_state=RANDOM_STATE)
     model.fit(X, y)
